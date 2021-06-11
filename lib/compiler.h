@@ -182,6 +182,33 @@ extern "C" {
 #define MACRO_REPEAT(NAME, ...) \
 	MACRO_VARIANT(_MACRO_REPEAT, ##__VA_ARGS__)(NAME, ##__VA_ARGS__)
 
+/* per-arglist repeat macro, use like this:
+ * #define SEP_SEMICOLON   ;
+ * #define foo(...) MAP_LISTS(F, SEP_SEMICOLON, ##__VA_ARGS__)
+ * where F is a n-ary function where n is the number of args in each arglist.
+ * e.g.: MAP_LISTS(f, SEP_SEMICOLON, (a, b), (c, d, e))
+ * expands to: f(a, b); f(c, d, e)
+ */
+#define MAP_LISTS(M, SEP, ...)										\
+	_CONCAT(_MAP_LISTS_, PP_NARG(__VA_ARGS__))(M, SEP, ##__VA_ARGS__)
+#define _MAP_LISTS_0(M, S)
+#define _MAP_LISTS_1(M, S, _1) \
+  M _1
+#define _MAP_LISTS_2(M, S, _1,_2) \
+  M _1 S M _2
+#define _MAP_LISTS_3(M, S, _1,_2,_3) \
+  M _1 S M _2 S M _3
+#define _MAP_LISTS_4(M, S, _1,_2,_3,_4) \
+	M _1 S M _2 S M _3 S M _4
+#define _MAP_LISTS_5(M, S, _1,_2,_3,_4,_5) \
+	M _1 S M _2 S M _3 S M _4 S M _5
+#define _MAP_LISTS_6(M, S, _1,_2,_3,_4,_5,_6) \
+	M _1 S M _2 S M _3 S M _4 S M _5 S M _6
+#define _MAP_LISTS_7(M, S, _1,_2,_3,_4,_5,_6,_7) \
+	M _1 S M _2 S M _3 S M _4 S M _5 S M _6 S M _7
+#define _MAP_LISTS_8(M, S, _1,_2,_3,_4,_5,_6,_7,_8) \
+	M _1 S M _2 S M _3 S M _4 S M _5 S M _6 S M _7 S M _8
+
 /*
  * for warnings on macros, put in the macro content like this:
  *   #define MACRO BLA CPP_WARN("MACRO has been deprecated")
