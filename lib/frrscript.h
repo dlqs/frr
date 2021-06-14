@@ -105,6 +105,14 @@ void frrscript_init(const char *scriptdir);
   DECODE_ARGS_WITH_STATE(L, value)
 
 #define ENCODE_ARGS_WITH_STATE(L, value) _Generic((value),        \
+  long long * : lua_pushintegerp,                                 \
+  struct prefix * : lua_pushprefix,                               \
+  struct interface * : lua_pushinterface,                         \
+  struct in_addr * : lua_pushinaddr,                              \
+  struct in6_addr * : lua_pushin6addr,                            \
+  union sockunion * : lua_pushsockunion,                          \
+  time_t * : lua_pushtimet,                                       \
+  char * : lua_pushstring_wrapper                                 \
   )(L, value);
 
 #define DECODE_ARGS_WITH_STATE(L, value) _Generic((value),        \
