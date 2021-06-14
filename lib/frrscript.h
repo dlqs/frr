@@ -25,6 +25,7 @@
 
 #include <lua.h>
 #include "frrlua.h"
+#include "../bgpd/bgp_script.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -105,6 +106,10 @@ void frrscript_init(const char *scriptdir);
   DECODE_ARGS_WITH_STATE(L, value)
 
 #define ENCODE_ARGS_WITH_STATE(L, value) _Generic((value),        \
+  struct attr * : lua_pushattr,                                   \
+  struct peer * : lua_pushpeer,                                   \
+  int * : lua_pushintegerp,                                       \
+  const struct prefix * : lua_pushprefix,                         \
   long long * : lua_pushintegerp,                                    \
   struct prefix * : lua_pushprefix,                                  \
   struct interface * : lua_pushinterface,                            \
@@ -116,6 +121,10 @@ void frrscript_init(const char *scriptdir);
   )(L, value);
 
 #define DECODE_ARGS_WITH_STATE(L, value) _Generic((value),        \
+  struct attr * : lua_decode_attr,                                \
+  struct peer * : lua_decode_noop,                                \
+  int * : lua_decode_integerp,                                    \
+  const struct prefix * : lua_decode_prefix,                      \
   long long * : lua_decode_integerp,                              \
   struct prefix * : lua_decode_prefix,                            \
   struct interface * : lua_decode_interface,                      \
