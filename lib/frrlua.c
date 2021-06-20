@@ -71,14 +71,17 @@ void lua_pushprefix(lua_State *L, const struct prefix *prefix)
 	lua_setfield(L, -2, "family");
 }
 
+void lua_decode_prefix(lua_State *L, int idx, struct prefix *prefix)
+{
+	lua_getfield(L, idx, "network");
+	(void)str2prefix(lua_tostring(L, -1), prefix);
+	lua_pop(L, 1);
+}
+
 void *lua_toprefix(lua_State *L, int idx)
 {
 	struct prefix *p = XCALLOC(MTYPE_TMP, sizeof(struct prefix));
-
-	lua_getfield(L, idx, "network");
-	(void)str2prefix(lua_tostring(L, -1), p);
-	lua_pop(L, 1);
-
+	lua_decode_prefix(L, idx, p);
 	return p;
 }
 
@@ -109,10 +112,8 @@ void lua_pushinterface(lua_State *L, const struct interface *ifp)
 	lua_setfield(L, -2, "linklayer_type");
 }
 
-void *lua_tointerface(lua_State *L, int idx)
+void lua_decode_interface(lua_State *L, int idx, struct interface *ifp)
 {
-	struct interface *ifp = XCALLOC(MTYPE_TMP, sizeof(struct interface));
-
 	lua_getfield(L, idx, "name");
 	strlcpy(ifp->name, lua_tostring(L, -1), sizeof(ifp->name));
 	lua_pop(L, 1);
@@ -146,7 +147,11 @@ void *lua_tointerface(lua_State *L, int idx)
 	lua_getfield(L, idx, "linklayer_type");
 	ifp->ll_type = lua_tointeger(L, -1);
 	lua_pop(L, 1);
-
+}
+void *lua_tointerface(lua_State *L, int idx)
+{
+	struct interface *ifp = XCALLOC(MTYPE_TMP, sizeof(struct interface));
+	lua_decode_interface(L, idx, ifp);
 	return ifp;
 }
 
@@ -162,14 +167,17 @@ void lua_pushinaddr(lua_State *L, const struct in_addr *addr)
 	lua_setfield(L, -2, "string");
 }
 
-void *lua_toinaddr(lua_State *L, int idx)
+void lua_decode_inaddr(lua_State *L, int idx, struct in_addr *inaddr)
 {
-	struct in_addr *inaddr = XCALLOC(MTYPE_TMP, sizeof(struct in_addr));
-
 	lua_getfield(L, idx, "value");
 	inaddr->s_addr = lua_tointeger(L, -1);
 	lua_pop(L, 1);
+}
 
+void *lua_toinaddr(lua_State *L, int idx)
+{
+	struct in_addr *inaddr = XCALLOC(MTYPE_TMP, sizeof(struct in_addr));
+	lua_decode_inaddr(L, idx, inaddr);
 	return inaddr;
 }
 
@@ -186,14 +194,17 @@ void lua_pushin6addr(lua_State *L, const struct in6_addr *addr)
 	lua_setfield(L, -2, "string");
 }
 
-void *lua_toin6addr(lua_State *L, int idx)
+void lua_decode_in6addr(lua_State *L, int idx, struct in6_addr *in6addr)
 {
-	struct in6_addr *in6addr = XCALLOC(MTYPE_TMP, sizeof(struct in6_addr));
-
 	lua_getfield(L, idx, "string");
 	inet_pton(AF_INET6, lua_tostring(L, -1), in6addr);
 	lua_pop(L, 1);
+}
 
+void *lua_toin6addr(lua_State *L, int idx)
+{
+	struct in6_addr *in6addr = XCALLOC(MTYPE_TMP, sizeof(struct in6_addr));
+	lua_decode_in6addr(L, idx, in6addr);
 	return in6addr;
 }
 
@@ -210,13 +221,16 @@ void lua_pushsockunion(lua_State *L, const union sockunion *su)
 	lua_setfield(L, -2, "string");
 }
 
+void lua_decode_sockunion(lua_State *L, int idx, union sockunion *su)
+{
+	lua_getfield(L, idx, "string");
+	str2sockunion(lua_tostring(L, -1), su);
+}
+
 void *lua_tosockunion(lua_State *L, int idx)
 {
 	union sockunion *su = XCALLOC(MTYPE_TMP, sizeof(union sockunion));
-
-	lua_getfield(L, idx, "string");
-	str2sockunion(lua_tostring(L, -1), su);
-
+	lua_decode_sockunion(L, idx, su);
 	return su;
 }
 
@@ -225,12 +239,15 @@ void lua_pushtimet(lua_State *L, const time_t *time)
 	lua_pushinteger(L, *time);
 }
 
+void lua_decode_timet(lua_State *L, int idx, time_t *t)
+{
+	*t = lua_tointeger(L, idx);
+}
+
 void *lua_totimet(lua_State *L, int idx)
 {
 	time_t *t = XCALLOC(MTYPE_TMP, sizeof(time_t));
-
-	*t = lua_tointeger(L, idx);
-
+	lua_decode_timet(L, idx, t);
 	return t;
 }
 
@@ -239,15 +256,23 @@ void lua_pushintegerp(lua_State *L, const long long *num)
 	lua_pushinteger(L, *num);
 }
 
-void *lua_tointegerp(lua_State *L, int idx)
+void lua_decode_integerp(lua_State *L, int idx, long long *num)
 {
 	int isnum;
-	long long *num = XCALLOC(MTYPE_TMP, sizeof(long long));
-
 	*num = lua_tonumberx(L, idx, &isnum);
 	assert(isnum);
+}
 
+void *lua_tointegerp(lua_State *L, int idx)
+{
+	long long *num = XCALLOC(MTYPE_TMP, sizeof(long long));
+	lua_decode_integerp(L, idx, num);
 	return num;
+}
+
+void lua_decode_stringp(lua_State *L, int idx, char *str)
+{
+	strcpy(str, lua_tostring(L, idx));
 }
 
 void *lua_tostringp(lua_State *L, int idx)
