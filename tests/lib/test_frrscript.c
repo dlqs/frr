@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 
 	struct frrscript *fs = frrscript_load("script1", NULL);
 	long long a = 100, b = 200;
-	int result = frrscript_call(fs, ("a", &a), ("b", &b));
+	int result = frrscript_call(fs, "foo", ("a", &a), ("b", &b));
 
 	assert(result == 0);
 	assert(a == 300);
