@@ -5,3 +5,16 @@ function foo(a, b)
     b = b,
   }
 end
+
+function fact(n)
+  function helper(m)
+    if m == 0 then
+      return 1
+    else
+      return m * helper(m - 1)
+    end
+  end
+  return {
+    n = helper(n)
+  }
+end

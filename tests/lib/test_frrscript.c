@@ -27,11 +27,18 @@ int main(int argc, char **argv)
 
 	struct frrscript *fs = frrscript_load("script1", NULL);
 	long long a = 100, b = 200;
-	int result = frrscript_call(fs, "foo", ("a", &a), ("b", &b));
+	int result;
+	result = frrscript_call(fs, "foo", ("a", &a), ("b", &b));
 
 	assert(result == 0);
 	assert(a == 300);
 	assert(b == 200);
+
+	struct frrscript *fs2 = frrscript_load("script1", NULL);
+	long long n = 5;
+	result = frrscript_call(fs2, "fact", ("n", &n));
+	assert(result == 0);
+	assert(n == 120);
 
 	return 0;
 }
