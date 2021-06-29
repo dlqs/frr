@@ -97,15 +97,11 @@ void frrscript_register_type_codecs(struct frrscript_codec *codecs);
  */
 void frrscript_init(const char *scriptdir);
 
-#define ENCODE_ARGS(name, value)                                               \
-	do {                                                                   \
-		ENCODE_ARGS_WITH_STATE(L, value);                              \
-		lua_setglobal(L, name);                                        \
-	} while (0)
+#define ENCODE_ARGS(name, value) ENCODE_ARGS_WITH_STATE(L, value)
 
 #define DECODE_ARGS(name, value)                                               \
 	do {                                                                   \
-		lua_getglobal(L, name);                                        \
+		lua_getfield(L, 1, name);                                      \
 		DECODE_ARGS_WITH_STATE(L, value);                              \
 	} while (0)
 
@@ -157,7 +153,7 @@ const struct prefix * : lua_decode_noop                         \
  * Returns:
  *    0 if the script ran successfully, nonzero otherwise.
  */
-int _frrscript_call(struct frrscript *fs);
+int _frrscript_call(struct frrscript *fs, int nargs);
 
 /*
  * Wrapper for call script. Maps values passed in to their encoder
@@ -169,11 +165,13 @@ int _frrscript_call(struct frrscript *fs);
  * Returns:
  *    0 if the script ran successfully, nonzero otherwise.
  */
-#define frrscript_call(fs, ...)                                                \
+#define frrscript_call(fs, f, ...)                                             \
 	({                                                                     \
 		lua_State *L = fs->L;                                          \
+		lua_getglobal(L, f);                                           \
+		assert(lua_isfunction(L, lua_gettop(L)));                      \
 		MAP_LISTS(ENCODE_ARGS, ##__VA_ARGS__);                         \
-		int ret = _frrscript_call(fs);                                 \
+		int ret = _frrscript_call(fs, PP_NARG(__VA_ARGS__));           \
 		if (ret == 0) {                                                \
 			MAP_LISTS(DECODE_ARGS, ##__VA_ARGS__);                 \
 		}                                                              \

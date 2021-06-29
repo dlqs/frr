@@ -104,10 +104,11 @@ static void codec_free(struct codec *c)
 
 /* Generic script APIs */
 
-int _frrscript_call(struct frrscript *fs)
+int _frrscript_call(struct frrscript *fs, int nargs)
 {
 
-	int ret = lua_pcall(fs->L, 0, 0, 0);
+	int ret = lua_pcall(fs->L, nargs, 1, 0);
+	assert(lua_gettop(fs->L) == 1);
 
 	switch (ret) {
 	case LUA_OK:
@@ -195,7 +196,7 @@ struct frrscript *frrscript_load(const char *name,
 	char fname[MAXPATHLEN * 2];
 	snprintf(fname, sizeof(fname), "%s/%s.lua", scriptdir, fs->name);
 
-	int ret = luaL_loadfile(fs->L, fname);
+	int ret = luaL_dofile(fs->L, fname);
 
 	switch (ret) {
 	case LUA_OK:
