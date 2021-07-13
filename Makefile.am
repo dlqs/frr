@@ -139,6 +139,7 @@ include doc/user/subdir.am
 include doc/manpages/subdir.am
 include doc/developer/subdir.am
 include include/subdir.am
+include lua-5.3.6/subdir.am
 include lib/subdir.am
 include mlag/subdir.am
 include zebra/subdir.am

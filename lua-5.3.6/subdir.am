@@ -1,0 +1,2 @@
+all-local:
+	cd lua-5.3.6 && $(MAKE) $(AM_MAKEFLAGS) -f Makefile.real linux install INSTALL_TOP=../install
