@@ -287,7 +287,6 @@ SCRIPTING=true
 AC_SUBST([LUA], [lua-5.3.6/bin/lua])
 AC_SUBST([LUA_INCLUDE], [-Ilua-5.3.6/install/include])
 AC_SUBST([LUA_LIB], [-llua5.3])
-LIBS="$LIBS $LUA_LIB"
 
 dnl the following flags go in CFLAGS rather than AC_CFLAGS since they make
 dnl sense to be overridden by the user
