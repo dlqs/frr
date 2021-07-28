@@ -280,18 +280,28 @@ if test "$enable_clang_coverage" = "yes"; then
    ])
 fi
 
+AC_DEFINE([HAVE_SCRIPTING], [1], [Have support for scripting])
+
+dnl BUILD_LUA is used to trigger building of Lua from tarball
+AM_CONDITIONAL([BUILD_LUA], [ true ])
+
+dnl AX_PROG_LUA should try to find a Lua with this version
+LUA_VERSION="5.3.6"
 AX_PROG_LUA([5.3], [5.4], [], [
-  AC_MSG_ERROR([Lua 5.3 is required to build with Lua support. No other version is supported.])
+  AC_MSG_NOTICE([ Did not detect system Lua interpreter. Building from tarball. ])
+  BUILD_LUA=true
 ])
 AX_LUA_HEADERS([], [
-  AC_MSG_ERROR([Lua 5.3 headers are required to build with Lua support. No other version is supported.])
+  AC_MSG_NOTICE([ Did not detect system Lua 5.3 Headers. Building from tarball. ])
 ])
 AX_LUA_LIBS([
-  AC_DEFINE([HAVE_SCRIPTING], [1], [Have support for scripting])
-  LIBS="$LIBS $LUA_LIB"
 ], [
-  AC_MSG_ERROR([Lua 5.3 libraries are required to build with Lua support. No other version is supported.])
+  AC_MSG_NOTICE([ Did not detect system Lua 5.3 libraries. Building from tarball. ])
+  BUILD_LUA=true
 ])
+
+dnl For CPP FLAGS. This must come AFTER the above
+LUA_INCLUDE=-Ilua-5.3.6/src
 
 dnl the following flags go in CFLAGS rather than AC_CFLAGS since they make
 dnl sense to be overridden by the user
