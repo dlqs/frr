@@ -630,7 +630,6 @@ LUA_SOURCES= \
 R=1
 V=5.3.6
 liblua.so: $(LUA_SOURCES)
-	tar -xf lua-5.3.6.tar.gz
 	$(CC) -shared -fPIC -ldl -Wl,-soname,$(LUA_SO).$(V) -o $@.$(R) $? -lm
 	ln -sf $(LUA_SO).$(R) $(LUA_SO).$(V)
 	ln -sf $(LUA_SO).$(R) $(LUA_SO)
