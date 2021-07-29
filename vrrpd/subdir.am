@@ -36,7 +36,7 @@ clippy_scan += \
 	# end
 
 vrrpd_vrrpd_SOURCES = vrrpd/vrrp_main.c
-vrrpd_vrrpd_LDADD = vrrpd/libvrrp.a lib/libfrr.la @LIBCAP@
+vrrpd_vrrpd_LDADD = vrrpd/libvrrp.a lib/libfrr.la liblua.so.1 @LIBCAP@
 nodist_vrrpd_vrrpd_SOURCES = \
 	yang/frr-vrrpd.yang.c \
 	# end

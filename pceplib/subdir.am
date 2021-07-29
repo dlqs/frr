@@ -57,6 +57,6 @@ noinst_HEADERS += pceplib/pcep.h \
 
 noinst_PROGRAMS += pceplib/pcep_pcc
 pceplib_pcep_pcc_SOURCES = pceplib/pcep_pcc.c
-pceplib_pcep_pcc_LDADD = pceplib/libpcep_pcc.la lib/libfrr.la -lpthread
+pceplib_pcep_pcc_LDADD = pceplib/libpcep_pcc.la lib/libfrr.la liblua.so.1 -lpthread
 
 endif

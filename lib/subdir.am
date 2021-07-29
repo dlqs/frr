@@ -368,7 +368,7 @@ endif
 
 lib_confd_la_CFLAGS = $(AM_CFLAGS) $(CONFD_CFLAGS)
 lib_confd_la_LDFLAGS = $(MODULE_LDFLAGS)
-lib_confd_la_LIBADD = lib/libfrr.la $(CONFD_LIBS)
+lib_confd_la_LIBADD = lib/libfrr.la liblua.so.1 $(CONFD_LIBS)
 lib_confd_la_SOURCES = lib/northbound_confd.c
 
 #
@@ -380,7 +380,7 @@ endif
 
 lib_sysrepo_la_CFLAGS = $(AM_CFLAGS) $(SYSREPO_CFLAGS)
 lib_sysrepo_la_LDFLAGS = $(MODULE_LDFLAGS)
-lib_sysrepo_la_LIBADD = lib/libfrr.la $(SYSREPO_LIBS)
+lib_sysrepo_la_LIBADD = lib/libfrr.la liblua.so.1 $(SYSREPO_LIBS)
 lib_sysrepo_la_SOURCES = lib/northbound_sysrepo.c
 
 #
@@ -392,7 +392,7 @@ endif
 
 lib_grpc_la_CXXFLAGS = $(WERROR) $(GRPC_CFLAGS)
 lib_grpc_la_LDFLAGS = $(MODULE_LDFLAGS)
-lib_grpc_la_LIBADD = lib/libfrr.la grpc/libfrrgrpc_pb.la $(GRPC_LIBS)
+lib_grpc_la_LIBADD = lib/libfrr.la liblua.so.1 grpc/libfrrgrpc_pb.la $(GRPC_LIBS)
 lib_grpc_la_SOURCES = lib/northbound_grpc.cpp
 
 #
@@ -414,7 +414,7 @@ endif
 lib_grammar_sandbox_SOURCES = \
 	lib/grammar_sandbox_main.c
 lib_grammar_sandbox_LDADD = \
-	lib/libfrr.la
+	lib/libfrr.la liblua.so.1
 
 lib_clippy_CPPFLAGS = $(CPPFLAGS_BASE) -D_GNU_SOURCE -DBUILDING_CLIPPY
 lib_clippy_CFLAGS = $(AC_CFLAGS) $(PYTHON_CFLAGS)

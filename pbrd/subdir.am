@@ -39,5 +39,5 @@ clippy_scan += \
 	# end
 
 pbrd_pbrd_SOURCES = pbrd/pbr_main.c
-pbrd_pbrd_LDADD = pbrd/libpbr.a lib/libfrr.la $(LIBCAP)
+pbrd_pbrd_LDADD = pbrd/libpbr.a lib/libfrr.la liblua.so.1 $(LIBCAP)
 

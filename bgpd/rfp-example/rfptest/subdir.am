@@ -18,6 +18,6 @@ noinst_HEADERS += \
 	# end
 
 bgpd_rfp_example_rfptest_rfptest_LDADD = \
-	lib/libfrr.la \
+	lib/libfrr.la liblua.so.1 \
 	$(RFPLDADD) \
 	# end

@@ -172,7 +172,7 @@ TESTS_CXXFLAGS = \
 	# end
 # note no -Werror
 
-ALL_TESTS_LDADD = lib/libfrr.la $(LIBCAP)
+ALL_TESTS_LDADD = lib/libfrr.la liblua.so.1 $(LIBCAP)
 BGP_TEST_LDADD = bgpd/libbgp.a $(RFPLDADD) $(ALL_TESTS_LDADD) $(LIBYANG_LIBS) -lm
 ISISD_TEST_LDADD = isisd/libisis.a $(ALL_TESTS_LDADD)
 if GRPC

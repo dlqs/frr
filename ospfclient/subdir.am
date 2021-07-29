@@ -9,7 +9,7 @@ noinst_PROGRAMS += ospfclient/ospfclient
 endif
 
 ospfclient_libfrrospfapiclient_la_LDFLAGS = $(LIB_LDFLAGS) -version-info 0:0:0
-ospfclient_libfrrospfapiclient_la_LIBADD = lib/libfrr.la
+ospfclient_libfrrospfapiclient_la_LIBADD = lib/libfrr.la liblua.so.1
 ospfclient_libfrrospfapiclient_la_SOURCES = \
 	ospfclient/ospf_apiclient.c \
 	# end
@@ -35,7 +35,7 @@ else # !STATIC_BIN
 # to disallow transitive references *while* *als* not patching their libtool
 # to work appropriately.  RedHat has the same linker behaviour, but things
 # work as expected since they also patch libtool.
-ospfclient_ospfclient_LDADD += lib/libfrr.la
+ospfclient_ospfclient_LDADD += lib/libfrr.la liblua.so.1
 endif
 
 ospfclient_ospfclient_SOURCES = \

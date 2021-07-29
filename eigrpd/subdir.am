@@ -79,4 +79,4 @@ nodist_eigrpd_eigrpd_SOURCES = \
 	# end
 
 eigrpd_eigrpd_SOURCES = eigrpd/eigrp_main.c
-eigrpd_eigrpd_LDADD = eigrpd/libeigrp.a lib/libfrr.la $(LIBCAP)
+eigrpd_eigrpd_LDADD = eigrpd/libeigrp.a lib/libfrr.la liblua.so.1 $(LIBCAP)

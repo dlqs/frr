@@ -137,13 +137,13 @@ nodist_pimd_pimd_SOURCES = \
 	yang/frr-pim-rp.yang.c \
 	# end
 
-pimd_pimd_LDADD = pimd/libpim.a lib/libfrr.la $(LIBCAP)
+pimd_pimd_LDADD = pimd/libpim.a lib/libfrr.la liblua.so.1 $(LIBCAP)
 pimd_pimd_SOURCES = pimd/pim_main.c
 
-pimd_test_igmpv3_join_LDADD = lib/libfrr.la
+pimd_test_igmpv3_join_LDADD = lib/libfrr.la liblua.so.1
 pimd_test_igmpv3_join_SOURCES = pimd/test_igmpv3_join.c
 
-pimd_mtracebis_LDADD =  lib/libfrr.la
+pimd_mtracebis_LDADD =  lib/libfrr.la liblua.so.1
 pimd_mtracebis_SOURCES = pimd/mtracebis.c \
 			 pimd/mtracebis_netlink.c \
 			 pimd/mtracebis_routeget.c \
