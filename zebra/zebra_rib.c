@@ -39,6 +39,7 @@
 #include "nexthop_group_private.h"
 #include "frr_pthread.h"
 #include "printfrr.h"
+#include "frrscript.h"
 
 #include "zebra/zebra_router.h"
 #include "zebra/connected.h"
@@ -57,6 +58,7 @@
 #include "zebra/zapi_msg.h"
 #include "zebra/zebra_dplane.h"
 #include "zebra/zebra_evpn_mh.h"
+#include "zebra/zebra_script.h"
 
 DEFINE_MGROUP(ZEBRA, "zebra");
 
@@ -4308,7 +4310,10 @@ static int rib_process_dplane_results(struct thread *thread)
 			continue;
 		}
 
+		struct frrscript *fs = frrscript_new("my_script");
+		frrscript_load(fs, "on_rib_process_dplane_results", NULL);
 		while (ctx) {
+			frrscript_call(fs, "on_rib_process_dplane_results", ("ctx", ctx));
 			switch (dplane_ctx_get_op(ctx)) {
 			case DPLANE_OP_ROUTE_INSTALL:
 			case DPLANE_OP_ROUTE_UPDATE:
