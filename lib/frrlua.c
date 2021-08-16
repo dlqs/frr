@@ -223,6 +223,14 @@ void *lua_toin6addr(lua_State *L, int idx)
 	return in6addr;
 }
 
+void lua_pushipaddr(lua_State *L, const struct ipaddr *addr) {
+	if (IS_IPADDR_V4(addr)) {
+		lua_pushinaddr(L, addr);
+	} else {
+		lua_pushin6addr(L, addr);
+	}
+}
+
 void lua_pushsockunion(lua_State *L, const union sockunion *su)
 {
 	char buf[SU_ADDRSTRLEN];
@@ -293,6 +301,38 @@ void *lua_tointegerp(lua_State *L, int idx)
 
 	lua_decode_integerp(L, idx, num);
 	return num;
+}
+
+void lua_pushnexthop(lua_State *L, const struct nexthop *nexthop)
+{
+	lua_newtable(L);
+	lua_pushinteger(L, nexthop->vrf_id);
+	lua_setfield(L, -2, "vrf_id");
+	lua_pushinteger(L, nexthop->ifindex);
+	lua_setfield(L, -2, "ifindex");
+	lua_pushinteger(L, nexthop->type);
+	lua_setfield(L, -2, "type");
+	lua_pushinteger(L, nexthop->flags);
+	lua_setfield(L, -2, "flags");
+	lua_pushinteger(L, nexthop->nh_label_type);
+	lua_setfield(L, -2, "nh_label_type");
+	lua_pushinteger(L, nexthop->weight);
+	lua_setfield(L, -2, "weight");
+	lua_pushinteger(L, nexthop->backup_num);
+	lua_setfield(L, -2, "backup_num");
+	lua_pushinteger(L, nexthop->backup_idx);
+	lua_setfield(L, -2, "backup_idx");
+	lua_pushinteger(L, nexthop->nh_encap_type);
+	lua_setfield(L, -2, "nh_encap_type");
+	lua_pushinteger(L, nexthop->srte_color);
+	lua_setfield(L, -2, "srte_color");
+}
+
+void lua_pushnexthop_group(lua_State *L, const struct nexthop_group *ng)
+{
+	lua_newtable(L);
+	lua_pushnexthop(L, ng->nexthop);
+	lua_setfield(L, -2, "nexthop");
 }
 
 void lua_decode_stringp(lua_State *L, int idx, char *str)
