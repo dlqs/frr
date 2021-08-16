@@ -24,8 +24,15 @@
 #ifdef HAVE_SCRIPTING
 
 #include <lua.h>
+#include <nexthop.h>
+#include <nexthop_group.h>
 #include "frrlua.h"
 #include "bgpd/bgp_script.h" // for peer and attr encoders/decoders
+//#include "zebra/zebra_script.h" // for peer and attr encoders/decoders
+
+extern struct zebra_dplane_ctx;
+extern void lua_pushzebra_dplane_ctx(lua_State *L, struct zebra_dplane_ctx *ctx);
+extern void lua_decode_zebra_dplane_ctx(lua_State *L, int idx, struct zebra_dplane_ctx *ctx);
 
 #ifdef __cplusplus
 extern "C" {
@@ -171,7 +178,11 @@ time_t * : lua_pushtimet,                                       \
 char * : lua_pushstring_wrapper,                                \
 struct attr * : lua_pushattr,                                   \
 struct peer * : lua_pushpeer,                                   \
-const struct prefix * : lua_pushprefix                          \
+const struct prefix * : lua_pushprefix,                         \
+const struct ipaddr * : lua_pushipaddr,                         \
+const struct nexthop_group * : lua_pushnexthop_group,           \
+const struct nexthop * : lua_pushnexthop,                       \
+struct zebra_dplane_ctx * : lua_pushzebra_dplane_ctx            \
 )((L), (value))
 
 #define DECODE_ARGS_WITH_STATE(L, value)                                       \
@@ -187,7 +198,11 @@ time_t * : lua_decode_timet,                                    \
 char * : lua_decode_stringp,                                    \
 struct attr * : lua_decode_attr,                                \
 struct peer * : lua_decode_noop,                                \
-const struct prefix * : lua_decode_noop                         \
+const struct prefix * : lua_decode_noop,                        \
+const struct ipaddr * : lua_decode_noop,                        \
+const struct nexthop_group * : lua_decode_noop,                 \
+const struct nexthop * : lua_decode_noop,                       \
+struct zebra_dplane_ctx * : lua_decode_zebra_dplane_ctx         \
 )((L), -1, (value))
 
 /*
