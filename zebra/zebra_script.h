@@ -8,11 +8,7 @@
 
 #include "frrlua.h"
 
-void lua_pushvrf(lua_State *L, struct vrf *vrf);
-
-void lua_pushzebra_dplane_ctx(lua_State *L, struct zebra_dplane_ctx *ctx);
-
-void lua_decode_zebra_dplane_ctx(lua_State *L, int idx, struct zebra_dplane_ctx *ctx);
+void lua_pushzebra_dplane_ctx(lua_State *L, const struct zebra_dplane_ctx *ctx);
 
 #endif /* HAVE_SCRIPTING */
 

@@ -225,10 +225,17 @@ void *lua_toin6addr(lua_State *L, int idx)
 
 void lua_pushipaddr(lua_State *L, const struct ipaddr *addr) {
 	if (IS_IPADDR_V4(addr)) {
-		lua_pushinaddr(L, addr);
+		lua_pushinaddr(L, &addr->ipaddr_v4);
 	} else {
-		lua_pushin6addr(L, addr);
+		lua_pushin6addr(L, &addr->ipaddr_v6);
 	}
+}
+
+void lua_pushethaddr(lua_State *L, const struct ethaddr *addr)
+{
+	lua_newtable(L);
+	lua_pushinteger(L, *(addr->octet));
+	lua_setfield(L, -2, "octet");
 }
 
 void lua_pushsockunion(lua_State *L, const union sockunion *su)
@@ -314,14 +321,28 @@ void lua_pushnexthop(lua_State *L, const struct nexthop *nexthop)
 	lua_setfield(L, -2, "type");
 	lua_pushinteger(L, nexthop->flags);
 	lua_setfield(L, -2, "flags");
+	if (nexthop->type == NEXTHOP_TYPE_BLACKHOLE) {
+		lua_pushinteger(L, nexthop->bh_type);
+		lua_setfield(L, -2, "bh_type");
+	} else if (nexthop->type == NEXTHOP_TYPE_IPV4) {
+		lua_pushinaddr(L, &nexthop->gate.ipv4);
+		lua_setfield(L, -2, "gate");
+	} else if (nexthop->type == NEXTHOP_TYPE_IPV6) {
+		lua_pushin6addr(L, &nexthop->gate.ipv6);
+		lua_setfield(L, -2, "gate");
+	}
 	lua_pushinteger(L, nexthop->nh_label_type);
 	lua_setfield(L, -2, "nh_label_type");
 	lua_pushinteger(L, nexthop->weight);
 	lua_setfield(L, -2, "weight");
 	lua_pushinteger(L, nexthop->backup_num);
 	lua_setfield(L, -2, "backup_num");
-	lua_pushinteger(L, nexthop->backup_idx);
+	lua_pushinteger(L, *(nexthop->backup_idx));
 	lua_setfield(L, -2, "backup_idx");
+	if (nexthop->nh_encap_type == NET_VXLAN) {
+		lua_pushinteger(L, nexthop->nh_encap.vni);
+		lua_setfield(L, -2, "vni");
+	}
 	lua_pushinteger(L, nexthop->nh_encap_type);
 	lua_setfield(L, -2, "nh_encap_type");
 	lua_pushinteger(L, nexthop->srte_color);
@@ -331,8 +352,13 @@ void lua_pushnexthop(lua_State *L, const struct nexthop *nexthop)
 void lua_pushnexthop_group(lua_State *L, const struct nexthop_group *ng)
 {
 	lua_newtable(L);
-	lua_pushnexthop(L, ng->nexthop);
-	lua_setfield(L, -2, "nexthop");
+	struct nexthop *nexthop;
+	int i = 0;
+	for (ALL_NEXTHOPS_PTR(ng, nexthop)) {
+		lua_pushnexthop(L, nexthop);
+		lua_seti(L, -2, i);
+		i++;
+	}
 }
 
 void lua_decode_stringp(lua_State *L, int idx, char *str)

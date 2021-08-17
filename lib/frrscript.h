@@ -31,7 +31,8 @@
 //#include "zebra/zebra_script.h" // for peer and attr encoders/decoders
 
 extern struct zebra_dplane_ctx;
-extern void lua_pushzebra_dplane_ctx(lua_State *L, struct zebra_dplane_ctx *ctx);
+extern void lua_pushzebra_dplane_ctx(lua_State *L,
+				     const struct zebra_dplane_ctx *ctx);
 extern void lua_decode_zebra_dplane_ctx(lua_State *L, int idx, struct zebra_dplane_ctx *ctx);
 
 #ifdef __cplusplus
@@ -180,6 +181,7 @@ struct attr * : lua_pushattr,                                   \
 struct peer * : lua_pushpeer,                                   \
 const struct prefix * : lua_pushprefix,                         \
 const struct ipaddr * : lua_pushipaddr,                         \
+const struct ethaddr * : lua_pushethaddr,                       \
 const struct nexthop_group * : lua_pushnexthop_group,           \
 const struct nexthop * : lua_pushnexthop,                       \
 struct zebra_dplane_ctx * : lua_pushzebra_dplane_ctx            \
@@ -200,9 +202,10 @@ struct attr * : lua_decode_attr,                                \
 struct peer * : lua_decode_noop,                                \
 const struct prefix * : lua_decode_noop,                        \
 const struct ipaddr * : lua_decode_noop,                        \
+const struct ethaddr * : lua_decode_noop,                       \
 const struct nexthop_group * : lua_decode_noop,                 \
 const struct nexthop * : lua_decode_noop,                       \
-struct zebra_dplane_ctx * : lua_decode_zebra_dplane_ctx         \
+struct zebra_dplane_ctx * : lua_decode_noop               \
 )((L), -1, (value))
 
 /*

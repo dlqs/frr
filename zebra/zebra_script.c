@@ -1,6 +1,7 @@
 #include "zebra_script.h"
 
-void lua_pushzebra_dplane_ctx(lua_State *L, struct zebra_dplane_ctx *ctx) {
+void lua_pushzebra_dplane_ctx(lua_State *L, const struct zebra_dplane_ctx *ctx)
+{
 
 	lua_newtable(L);
 	lua_pushinteger(L, dplane_ctx_get_op(ctx));
@@ -130,8 +131,8 @@ void lua_pushzebra_dplane_ctx(lua_State *L, struct zebra_dplane_ctx *ctx) {
 			lua_setfield(L, -2, "vid");
 			lua_pushinteger(L, dplane_ctx_mac_get_br_ifindex(ctx));
 			lua_setfield(L, -2, "br_ifindex");
-			//lua_pushethaddr(L, dplane_ctx_mac_get_addr(ctx));
-			//lua_setfield(L, -2, "mac");
+			lua_pushethaddr(L, dplane_ctx_mac_get_addr(ctx));
+			lua_setfield(L, -2, "mac");
 			lua_pushinaddr(L, dplane_ctx_mac_get_vtep_ip(ctx));
 			lua_setfield(L, -2, "vtep_ip");
 			lua_pushinteger(L, dplane_ctx_mac_is_sticky(ctx));
@@ -193,19 +194,69 @@ void lua_pushzebra_dplane_ctx(lua_State *L, struct zebra_dplane_ctx *ctx) {
 		break;
 	case DPLANE_OP_IPTABLE_ADD:
 	case DPLANE_OP_IPTABLE_DELETE:
+		/**
 		lua_newtable(L); // iptable
 		{
+			lua_pushinteger(L, ctx->u.iptable.sock);
+			lua_setfield(L, -2, "sock");
+			lua_pushinteger(L, ctx->u.iptable.vrf_id);
+			lua_setfield(L, -2, "vrf_id");
+			lua_pushinteger(L, ctx->u.iptable.unique);
+			lua_setfield(L, -2, "unique");
+			lua_pushinteger(L, ctx->u.iptable.type);
+			lua_setfield(L, -2, "type");
+			lua_pushinteger(L, ctx->u.iptable.filter_bm);
+			lua_setfield(L, -2, "filter_bm");
+			lua_pushinteger(L, ctx->u.iptable.fwmark);
+			lua_setfield(L, -2, "fwmark");
+			lua_pushinteger(L, ctx->u.iptable.action);
+			lua_setfield(L, -2, "action");
+			lua_pushinteger(L, ctx->u.iptable.pkt_len_min);
+			lua_setfield(L, -2, "pkt_len_min");
+			lua_pushinteger(L, ctx->u.iptable.pkt_len_max);
+			lua_setfield(L, -2, "pkt_len_max");
+			lua_pushinteger(L, ctx->u.iptable.tcp_flags);
+			lua_setfield(L, -2, "tcp_flags");
+			lua_pushinteger(L, ctx->u.iptable.dscp_value);
+			lua_setfield(L, -2, "dscp_value");
+			lua_pushinteger(L, ctx->u.iptable.fragment);
+			lua_setfield(L, -2, "fragment");
+			lua_pushinteger(L, ctx->u.iptable.protocol);
+			lua_setfield(L, -2, "protocol");
+			lua_pushinteger(L, ctx->u.iptable.nb_interface);
+			lua_setfield(L, -2, "nb_interface");
+			lua_pushinteger(L, ctx->u.iptable.flow_label);
+			lua_setfield(L, -2, "flow_label");
+			lua_pushinteger(L, ctx->u.iptable.family);
+			lua_setfield(L, -2, "family");
+			lua_pushstring(L, ctx->u.iptable.ipset_name);
+			lua_setfield(L, -2, "ipset_name");
 		}
 		lua_setfield(L, -2, "iptable");
+		*/
 		break;
 	case DPLANE_OP_IPSET_ADD:
 	case DPLANE_OP_IPSET_DELETE:
 	case DPLANE_OP_IPSET_ENTRY_ADD:
 	case DPLANE_OP_IPSET_ENTRY_DELETE:
+		/**
 		lua_newtable(L); // ipset
 		{
+			lua_pushinteger(L, ctx->u.ipset.sock);
+			lua_setfield(L, -2, "sock");
+			lua_pushinteger(L, ctx->u.ipset.vrf_id);
+			lua_setfield(L, -2, "vrf_id");
+			lua_pushinteger(L, ctx->u.ipset.unique);
+			lua_setfield(L, -2, "unique");
+			lua_pushinteger(L, ctx->u.ipset.type);
+			lua_setfield(L, -2, "type");
+			lua_pushinteger(L, ctx->u.ipset.family);
+			lua_setfield(L, -2, "family");
+			lua_pushstring(L, ctx->u.ipset.ipset_name);
+			lua_setfield(L, -2, "ipset_name");
 		}
 		lua_setfield(L, -2, "ipset");
+		*/
 		break;
 	case DPLANE_OP_ADDR_INSTALL:
 	case DPLANE_OP_ADDR_UNINSTALL:
@@ -270,7 +321,4 @@ void lua_pushzebra_dplane_ctx(lua_State *L, struct zebra_dplane_ctx *ctx) {
 		lua_setfield(L, -2, "gre");
 	case DPLANE_OP_NONE:
 	} /* Dispatch by op code */
-}
-
-void lua_decode_zebra_dplane_ctx(lua_State *L, int idx, struct zebra_dplane_ctx *ctx) {
 }
